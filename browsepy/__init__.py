@@ -6,12 +6,12 @@ import os.path
 
 from flask import Flask, Response, request, render_template, redirect, \
                   url_for, send_from_directory, stream_with_context, \
-                  make_response
+                  make_response, flash
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import NotFound
 
 from .__meta__ import __app__, __version__, __license__, __author__
 from .manager import PluginManager
-from .file import File, OutsideRemovableBase, OutsideDirectoryBase, secure_filename, fs_encoding
 from .compat import PY_LEGACY
 
 __basedir__ = os.path.abspath(os.path.dirname(__file__))
@@ -36,6 +36,22 @@ app.config.update(
         ),
     )
 
+app.config.from_object('config')
+
+db = SQLAlchemy(app)
+
+# from .models import Metadata
+#
+# meta = Metadata()
+# meta.desc = "TEST"
+# meta.path = "/home/dolph/dev/browsepy/config.py"
+#
+# db.session.add(meta)
+# db.session.commit()
+
+# To avoid circular imports of db, include everything that imports db here!
+from .file import File, OutsideRemovableBase, OutsideDirectoryBase, secure_filename, fs_encoding
+
 if "BROWSEPY_SETTINGS" in os.environ:
     app.config.from_envvar("BROWSEPY_SETTINGS")
 
@@ -54,6 +70,10 @@ def stream_template(template_name, **context):
     template = app.jinja_env.get_template(template_name)
     stream = template.generate(context)
     return Response(stream_with_context(stream))
+
+@app.before_request
+def disclaimer():
+    pass
 
 @app.context_processor
 def template_globals():

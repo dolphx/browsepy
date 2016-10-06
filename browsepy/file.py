@@ -18,6 +18,7 @@ from flask import current_app, send_from_directory, Response
 from werkzeug.utils import cached_property
 
 from .compat import PY_LEGACY, range
+from .models import Metadata
 
 undescore_replace = '%s:underscore' % __name__
 codecs.register_error(undescore_replace,
@@ -169,6 +170,13 @@ class File(object):
         return self.mimetype.split(";", 1)[0]
 
     @property
+    def description(self):
+        try:
+            return Metadata.query.filter_by(path=self.path).one().desc
+        except:
+            return None
+
+    @property
     def encoding(self):
         if ";" in self.mimetype:
             match = self.re_charset.search(self.mimetype)
@@ -212,7 +220,7 @@ class TarFileStream(object):
         self._data = bytes()
         self._add = self.event_class()
         self._result = self.event_class()
-        self._tarfile = self.tarfile_class(fileobj=self, mode="w|gz", bufsize=buffsize) # stream write
+        self._tarfile = self.tarfile_class(fileobj=self, mode="w|gz", bufsize=buffsize)  # stream write
         self._th = self.thread_class(target=self.fill)
         self._th.start()
 
