@@ -26,25 +26,16 @@
 
 {% block content %}
             <script>
-            function deletePortfolio(id)
+            function test(id)
             {
-                bootbox.confirm("<strong>Portfolio deletion</strong>You can't undo this action. Are you sure?", function(result){
+                bootbox.confirm("<strong>TEST</strong> THIS IS A TEST", function(result){
                     if(result)
                     {
-                        $.getJSON(
-                                "/portfolio_delete/" + id,
-                                {}
-                        ).done(function(data){
-                            location.reload();
-                        }).fail(function(data,textstatus,xhr){
-                            alert('fail = ' + data + ', textstatus ' + textstatus );
-                        })
-                        ;
                     }
                 });
             }
         </script>
-        <button name="'test" class="btn btn-default" id ="button1" onclick="deletePortfolio(1)">TEST</button>
+        <button name="'test" class="btn btn-default" id ="button1" onclick="test(1)">TEST</button>
 {% if file.can_upload %}
     <form class="upload" method="post" action="{{ url_for('upload', path=file.urlpath) }}" enctype="multipart/form-data">
         <label>
@@ -106,7 +97,7 @@
                 function editMetadata(path, meta)
             {
                 bootbox.prompt({
-                    title: "<strong>Edid description of " + path +"</strong>",
+                    title: "<strong>Edit description of " + path +"</strong>",
                     inputType: 'textarea',
                     buttons: {
                         confirm: {
