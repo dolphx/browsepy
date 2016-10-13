@@ -25,17 +25,7 @@
 {% endblock %}
 
 {% block content %}
-            <script>
-            function test(id)
-            {
-                bootbox.confirm("<strong>TEST</strong> THIS IS A TEST", function(result){
-                    if(result)
-                    {
-                    }
-                });
-            }
-        </script>
-        <button name="'test" class="btn btn-default" id ="button1" onclick="test(1)">TEST</button>
+
 {% if file.can_upload %}
     <form class="upload" method="post" action="{{ url_for('upload', path=file.urlpath) }}" enctype="multipart/form-data">
         <label>
@@ -93,35 +83,47 @@
         </tbody>
     </table>
 {% endif %}
+
     <script>
-                function editMetadata(path, meta)
-            {
-                bootbox.prompt({
-                    title: "<strong>Edit description of " + path +"</strong>",
-                    inputType: 'textarea',
-                    value: meta,
-                    buttons: {
-                        confirm: {
-                            label: 'Save',
-                            className: 'btn-success'
-                        },
-                        cancel: {
-                            label: 'Cancel',
-                            className: 'btn-danger'
-                        }
+        function test(id)
+        {
+            bootbox.confirm("<strong>TEST</strong> THIS IS A TEST", function(result){
+                if(result)
+                {
+                }
+            });
+        }
+    </script>
+{#    <button name="'test" class="btn btn-default" id ="button1" onclick="test(1)">TEST</button>#}
+    <script>
+        function editMetadata(path, meta)
+        {
+            bootbox.prompt({
+                title: "<strong>Edit description of " + path +"</strong>",
+                inputType: 'textarea',
+                value: meta,
+                buttons: {
+                    confirm: {
+                        label: 'Save',
+                        className: 'btn-success'
                     },
-                    callback: function(result) {
-                        $.ajax({
-                            type: 'POST',
-                            url: '/edit/' + path,
-                            data: JSON.stringify({'description' : result}),
-                            contentType: 'application/json;charset=UTF-8',
-                            success: function() {
-                                window.location.reload(true);
-                            }
-                        })
+                    cancel: {
+                        label: 'Cancel',
+                        className: 'btn-danger'
                     }
-                });
-            }
-        </script>
+                },
+                callback: function(result) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/edit/' + path,
+                        data: JSON.stringify({'description' : result}),
+                        contentType: 'application/json;charset=UTF-8',
+                        success: function() {
+                            window.location.reload(true);
+                        }
+                    })
+                }
+            });
+        }
+    </script>
 {% endblock %}
