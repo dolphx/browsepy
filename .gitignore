@@ -4,4 +4,5 @@
 .coverage
 env/*
 *.pyc
-metadata.db
+/metadata.db
+/migrations/

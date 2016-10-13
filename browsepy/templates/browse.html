@@ -75,7 +75,7 @@
                         {% if f.can_download %}
                         <a href="{{ url_for('download_directory' if f.is_directory else 'download_file', path=f.urlpath) }}" class="download button"></a>
                         {% endif %}
-                        <a href="javaScript:editMetadata('{{ f.urlpath }}', '{{ f.description }}');" class="edit button"></a>
+                        <a href="javaScript:editMetadata('{{ f.urlpath }}', '{{ f.description if f.description else "" }}');" class="edit button"></a>
                         {% for endpoint, widget in f.actions %}
                             {% if widget.place == 'button' %}
                                 <a href="{{ url_for(endpoint, path=f.urlpath) }}"
@@ -84,7 +84,7 @@
                             {% endif %}
                         {% endfor %}
                     </td>
-		            <td>{{ f.description }}</td>
+		            <td>{{ f.description if f.description else "" }}</td>
                     <td>{{ f.type }}</td>
                     <td>{{ f.modified }}</td>
                     <td>{{ "" if f.is_directory else f.size }}</td>
@@ -99,6 +99,7 @@
                 bootbox.prompt({
                     title: "<strong>Edit description of " + path +"</strong>",
                     inputType: 'textarea',
+                    value: meta,
                     buttons: {
                         confirm: {
                             label: 'Save',
@@ -110,7 +111,15 @@
                         }
                     },
                     callback: function(result) {
-                        console.log('This was logged in the callback: ' + result);
+                        $.ajax({
+                            type: 'POST',
+                            url: '/edit/' + path,
+                            data: JSON.stringify({'description' : result}),
+                            contentType: 'application/json;charset=UTF-8',
+                            success: function() {
+                                window.location.reload(true);
+                            }
+                        })
                     }
                 });
             }

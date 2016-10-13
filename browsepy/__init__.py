@@ -8,6 +8,7 @@ from flask import Flask, Response, request, render_template, redirect, \
                   url_for, send_from_directory, stream_with_context, \
                   make_response, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.exceptions import NotFound
 
 from .__meta__ import __app__, __version__, __license__, __author__
@@ -40,17 +41,9 @@ app.config.from_object('config')
 
 db = SQLAlchemy(app)
 
-# from .models import Metadata
-#
-# meta = Metadata()
-# meta.desc = "TEST"
-# meta.path = "/home/dolph/dev/browsepy/config.py"
-#
-# db.session.add(meta)
-# db.session.commit()
-
 # To avoid circular imports of db, include everything that imports db here!
 from .file import File, OutsideRemovableBase, OutsideDirectoryBase, secure_filename, fs_encoding
+from .models import Metadata
 
 if "BROWSEPY_SETTINGS" in os.environ:
     app.config.from_envvar("BROWSEPY_SETTINGS")
@@ -100,6 +93,37 @@ def open_file(path):
         file = File.from_urlpath(path)
         if file.is_file:
             return send_from_directory(file.parent.path, file.name)
+    except OutsideDirectoryBase:
+        pass
+    return NotFound()
+
+@app.route("/edit/<path:path>", methods=("GET", "POST"))
+def edit_metadata(path):
+    try:
+        file = File.from_urlpath(path)
+
+        if request.method == "POST":
+            description = request.json['description']
+            try:  # update file description"
+                meta = Metadata.query.filter_by(path=file.path).one()
+                meta.desc = description
+                meta.path = file.path
+                db.session.commit()
+
+            except SQLAlchemyError:  # add new file description"
+                meta = Metadata()
+                meta.desc = description
+                meta.path = file.path
+                db.session.add(meta)
+                db.session.commit()
+
+            parent = file.parent
+            if parent is None:
+                # base is not removable
+                return NotFound()
+
+            return redirect(url_for(".browse", path=parent.urlpath))
+
     except OutsideDirectoryBase:
         pass
     return NotFound()
