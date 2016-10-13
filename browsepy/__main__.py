@@ -64,6 +64,12 @@ class ArgParse(argparse.ArgumentParser):
 
 def main(argv=sys.argv[1:], app=app, parser=ArgParse, run_fnc=flask.Flask.run):
     args = parser().parse_args(argv)
+
+    if app.config['SECRET_KEY'] == 'CHANGESECRETKEY':
+        print('CHANGE SECRET KEY!')
+        if args.debug == False:
+            return
+
     app.config.update(
         directory_base = args.directory,
         directory_start = args.initial or args.directory,
