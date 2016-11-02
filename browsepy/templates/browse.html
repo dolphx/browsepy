@@ -83,7 +83,7 @@
 		            <td>{{ f.description if f.description else "" }}</td>
                     <td>{{ f.type }}</td>
                     <td>{{ f.modified }}</td>
-                    <td>{{ "" if f.is_directory else f.size }}</td>
+                    <td>{{ f.size }}</td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -69,6 +69,14 @@ class File(object):
             new_filename = alternative_filename(filename)
         return new_filename
 
+    def get_dir_size(self):
+        total_size = 0
+        for dirpath, dirnames, filenames in os.walk(self.path):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                total_size += os.path.getsize(fp)
+        return total_size
+
     @property
     def plugin_manager(self):
         return self.app.extensions['plugin_manager']
@@ -152,10 +160,17 @@ class File(object):
 
     @property
     def size(self):
-        size, unit = fmt_size(self.stats.st_size, self.app.config["use_binary_multiples"])
+        rawsize = 0
+        if self.is_file:
+            rawsize = self.stats.st_size
+        if self.is_directory:
+            rawsize = self.get_dir_size()
+
+        size, unit = fmt_size(rawsize, self.app.config["use_binary_multiples"])
         if unit == binary_units[0]:
             return "%d %s" % (size, unit)
         return "%.2f %s" % (size, unit)
+
 
     @property
     def urlpath(self):
