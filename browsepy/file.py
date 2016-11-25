@@ -16,9 +16,12 @@ import functools
 
 from flask import current_app, send_from_directory, Response
 from werkzeug.utils import cached_property
+from sqlalchemy.exc import SQLAlchemyError
 
 from .compat import PY_LEGACY, range
 from .models import Metadata
+
+from . import db
 
 undescore_replace = '%s:underscore' % __name__
 codecs.register_error(undescore_replace,
@@ -158,19 +161,51 @@ class File(object):
     def modified(self):
         return datetime.datetime.fromtimestamp(self.stats.st_mtime).strftime('%Y.%m.%d %H:%M:%S')
 
-    @property
-    def size(self):
-        rawsize = 0
-        if self.is_file:
-            rawsize = self.stats.st_size
-        if self.is_directory:
-            rawsize = self.get_dir_size()
-
+    def print_size(self, rawsize):
         size, unit = fmt_size(rawsize, self.app.config["use_binary_multiples"])
         if unit == binary_units[0]:
             return "%d %s" % (size, unit)
         return "%.2f %s" % (size, unit)
 
+    def get_rawsize(self):
+        rawsize = 0
+        if self.is_file:
+            rawsize = self.stats.st_size
+        if self.is_directory:
+            rawsize = self.get_dir_size()
+        return rawsize
+
+    def update_db_size(self, meta):
+        meta.size = self.get_rawsize()
+        meta.size_date = datetime.datetime.now()
+        db.session.add(meta)
+        db.session.commit()
+        return meta
+
+    @property
+    def size(self):
+        try:
+            meta = Metadata.query.filter_by(path=self.path).one()
+            if meta.size and meta.size_date:
+                if datetime.datetime.now() < meta.size_date + datetime.timedelta(days=1):
+                    return self.print_size(meta.size)
+                else:
+                    meta = self.update_db_size(meta)
+                    return self.print_size(meta.size)
+            else:
+                meta = self.update_db_size(meta)
+                return self.print_size(meta.size)
+
+        except SQLAlchemyError:  # add new file description"
+            meta = Metadata()
+            meta.path = self.path
+            meta.size = self.get_rawsize()
+            meta.size_date = datetime.datetime.now()
+
+            db.session.add(meta)
+            db.session.commit()
+
+            return self.print_size(meta.size)
 
     @property
     def urlpath(self):
