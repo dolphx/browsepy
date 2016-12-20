@@ -64,10 +64,6 @@ def stream_template(template_name, **context):
     stream = template.generate(context)
     return Response(stream_with_context(stream))
 
-@app.before_request
-def disclaimer():
-    pass
-
 @app.context_processor
 def template_globals():
     return {

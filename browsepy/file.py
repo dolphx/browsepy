@@ -235,13 +235,18 @@ class File(object):
         return "default"
 
     def listdir(self):
+        ignored=[]
+
         path_joiner = functools.partial(os.path.join, self.path)
         content = [
             self.__class__(path=path_joiner(path), app=self.app)
             for path in self.raw_listdir
             ]
-        content.sort(key=lambda f: (f.is_directory, f.name.lower()))
-        return content
+
+        filtered_content = content
+        filtered_content = [c for c in content if c.name not in ignored]
+        filtered_content.sort(key=lambda f: (f.is_directory, f.name.lower()))
+        return filtered_content
 
     @classmethod
     def from_urlpath(cls, path, app=None):
