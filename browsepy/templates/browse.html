@@ -44,17 +44,18 @@
 {% if file.is_empty %}
     <p>No files in directory</p>
 {% else %}
-    <table class="browser table table-bordered table-striped">
-        <thead>
+    <div class="table-responsive">
+        <table class="browser table">
+            <thead>
             <tr>
                 <th colspan="3">Name</th>
-		        <th>Description</th>
+                <th>Description</th>
                 <th>Mimetype</th>
                 <th>Modified</th>
                 <th>Size</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             {% for f in file.listdir() %}
                 <tr>
                     {% set endpoint, widget = f.default_action %}
@@ -62,32 +63,33 @@
                     <td>
                         <a href="{{ url_for(endpoint, path=f.urlpath) }}"
                            {% if widget.css %}class="{{ widget.css }}"{% endif %}
-                           >{{ widget.text }}</a>
+                        >{{ widget.text }}</a>
                     </td>
                     <td>
                         {% if f.can_remove %}
-                        <a href="{{ url_for('remove', path=f.urlpath) }}" class="remove button"></a>
+                            <a href="{{ url_for('remove', path=f.urlpath) }}" class="remove button"></a>
                         {% endif %}
                         {% if f.can_download %}
-                        <a href="{{ url_for('download_directory' if f.is_directory else 'download_file', path=f.urlpath) }}" class="download button"></a>
+                            <a href="{{ url_for('download_directory' if f.is_directory else 'download_file', path=f.urlpath) }}" class="download button"></a>
                         {% endif %}
                         <a href="javaScript:editMetadata('{{ f.urlpath }}', '{{ f.description if f.description else "" }}');" class="edit button"></a>
                         {% for endpoint, widget in f.actions %}
                             {% if widget.place == 'button' %}
                                 <a href="{{ url_for(endpoint, path=f.urlpath) }}"
                                    class="button{% if widget.css %} {{widget.css}}{% endif %}"
-                                   >{{ widget.content }}</a>
+                                >{{ widget.content }}</a>
                             {% endif %}
                         {% endfor %}
                     </td>
-		            <td>{{ f.description if f.description else "" }}</td>
+                    <td>{{ f.description if f.description else "" }}</td>
                     <td>{{ f.type }}</td>
                     <td>{{ f.modified }}</td>
                     <td>{{ f.size }}</td>
                 </tr>
             {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 {% endif %}
 
     <script>

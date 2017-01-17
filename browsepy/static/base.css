@@ -96,9 +96,9 @@ form.remove input[type=submit]{
     min-width: 10em;
 }
 table.browser{
+    width:1000px;
     display:block;
-    table-layout:fixed;
-    border-collapse:collapse;
+    /*table-layout:fixed;*/
     overflow-x:auto;
     }
 table.browser tr:nth-child(2n){
@@ -121,10 +121,14 @@ table.browser td:first-child{
     }
 table.browser td:nth-child(2){
     text-align:left;
-    width:100%;
-    }
+    width: 50%;
+}
 table.browser td:nth-child(3){
     text-align:left;
+    }
+table.browser td:nth-child(4){
+    text-align:left;
+    width: 50%;
     }
 .icon-image{
 
