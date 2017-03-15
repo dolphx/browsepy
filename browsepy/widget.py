@@ -1,9 +1,28 @@
+'''
+WARNING: deprecated module.
+
+API defined in this module has been deprecated in version 0.5 will likely be
+removed at 0.6.
+'''
+import warnings
 
 from markupsafe import Markup
 from flask import url_for
 
+from .compat import deprecated
+
+
+warnings.warn('Deprecated module widget', category=DeprecationWarning)
+
+
 class WidgetBase(object):
+    _type = 'base'
     place = None
+
+    @deprecated('Deprecated widget API')
+    def __new__(cls, *args, **kwargs):
+        return super(WidgetBase, cls).__new__(cls)
+
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
@@ -19,6 +38,7 @@ class WidgetBase(object):
 
 
 class LinkWidget(WidgetBase):
+    _type = 'link'
     place = 'link'
 
     def __init__(self, text=None, css=None, icon=None):
@@ -32,13 +52,17 @@ class LinkWidget(WidgetBase):
             return self.__class__(
                 file.name if self.text is None else self.text,
                 self.css,
-                ('dir-icon' if file.is_directory else 'file-icon') if self.icon is None else self.icon,
+                self.icon if self.icon is not None else
+                'dir-icon' if file.is_directory else
+                'file-icon',
             )
         return self
 
 
 class ButtonWidget(WidgetBase):
+    _type = 'button'
     place = 'button'
+
     def __init__(self, html='', text='', css=''):
         self.content = Markup(html) if html else text
         self.css = css
@@ -46,6 +70,7 @@ class ButtonWidget(WidgetBase):
 
 
 class StyleWidget(WidgetBase):
+    _type = 'stylesheet'
     place = 'style'
 
     @property
@@ -54,6 +79,7 @@ class StyleWidget(WidgetBase):
 
 
 class JavascriptWidget(WidgetBase):
+    _type = 'script'
     place = 'javascript'
 
     @property
