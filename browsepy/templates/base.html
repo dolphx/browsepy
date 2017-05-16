@@ -15,19 +15,20 @@
 </head>
 
 <body>
-        <a href="https://www.unisdr.org/"><img src="{{ url_for('.static', filename='logo-unisdr.gif') }}" height="100"/></a>
-        <a href="http://www.mnm-team.org/"><img src="{{ url_for('.static', filename='mnmLogoNeu_caption.png') }}" height="100"/></a>
-        <a href="http://www.preventionweb.net/english/hyogo/gar/2015/en/home/index.html"><img src="{{ url_for('.static', filename='GAR15_logo_sm.png') }}" height="100"/></a>
+	<div class="banner">
+		<a href="http://www.preventionweb.net/english/hyogo/gar/2015/en/home/index.html"><img src="{{ url_for('.static', filename='BannerRiskAtlas.png') }}" /></a>
+        	<a href="http://www.mnm-team.org/"><img src="{{ url_for('.static', filename='mnmLogoNeu_caption.png') }}" height="100" class="innermnm" /></a>
+	<div>
 
+    {% block scripts %}
+        <script src="{{ url_for('static', filename='terms.js') }}"></script>
+        <script src="{{ url_for('static', filename='base.js') }}"></script>
+    {% endblock %}
     {% block header %}
     {% endblock %}
     {% block content %}
     {% endblock %}
     {% block footer %}{% endblock %}
-    {% block scripts %}
-        <script src="{{ url_for('static', filename='terms.js') }}"></script>
-        <script src="{{ url_for('static', filename='base.js') }}"></script>
-    {% endblock %}
 
 </body>
 </html>

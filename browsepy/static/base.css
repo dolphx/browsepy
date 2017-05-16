@@ -1,10 +1,4 @@
 @font-face {
-/*	font-family: 'icomoon';
-	src:url('fonts/icomoon.eot?c0qaf0');
-	src:url('fonts/icomoon.eot?c0qaf0#iefix') format('embedded-opentype'),
-		url('fonts/icomoon.ttf?c0qaf0') format('truetype'),
-		url('fonts/icomoon.woff?c0qaf0') format('woff'),
-		url('fonts/icomoon.svg?c0qaf0#icomoon') format('svg');*/
     font-family: "Glyphicons Halflings";
     src:url('fonts/glyphicons-halflings-regular.svg') format('svg'),
         url('fonts/glyphicons-halflings-regular.ttf') format('truetype'),
@@ -29,17 +23,37 @@ html{
     min-height:100%;
     position:relative;
     }
+
 body{
 
     font-family:sans;
     font-size:0.75em;
     padding:3.5em 1em 3.5em; margin:0;
     min-height:100%;
-    width:1920px;
+    #width:1200px;
     }
 
+.banner{
+    padding:0;
+    margin:0;
+    position: relative;
+    display: inline;
+    width:1200px;
+    height:100px;
+}
+
+.innermnm{
+	position: absolute;
+	top: 100;
+	left: 500px;
+}
+
+.navigation{
+    width:1200px;
+}
+
 div.wrap{
-    width:1000px;
+    width:1200px;
 }
 a, label, input[type=submit], input[type=file]{
     cursor: pointer;
@@ -96,9 +110,9 @@ form.remove input[type=submit]{
     min-width: 10em;
 }
 table.browser{
-    width:1000px;
+    width:1200px;
     display:block;
-    /*table-layout:fixed;*/
+    table-layout:fixed;
     overflow-x:auto;
     }
 table.browser tr:nth-child(2n){
@@ -109,7 +123,7 @@ table.browser td{
     margin:0;
     text-align:center;
     vertical-align:middle;
-    white-space:nowrap;
+    word-wrap:break-word;
     padding:5px;
     }
 table.browser th{
@@ -125,6 +139,7 @@ table.browser td:nth-child(2){
 }
 table.browser td:nth-child(3){
     text-align:left;
+    white-space:nowrap;
     }
 table.browser td:nth-child(4){
     text-align:left;
@@ -133,37 +148,7 @@ table.browser td:nth-child(4){
 .icon-image{
 
     }
-/*h1{*/
-    /*line-height:1.15em;*/
-    /*font-size:3em;*/
-    /*margin:0;padding:0 0 0.3em;*/
-    /*display:block;*/
-    /*color:black;*/
-    /*text-shadow:  1px  1px 0 white,*/
-                 /*-1px -1px 0 white,*/
-                  /*1px -1px 0 white,*/
-                 /*-1px  1px 0 white,*/
-                  /*1px  0   0 white,*/
-                 /*-1px  0   0 white,*/
-                  /*0   -1px 0 white,*/
-                  /*0    1px 0 white,*/
-                  /*2px  2px 0 black,*/
-                 /*-2px -2px 0 black,*/
-                  /*2px -2px 0 black,*/
-                 /*-2px  2px 0 black,*/
-                  /*2px  0   0 black,*/
-                 /*-2px  0   0 black,*/
-                  /*0    2px 0 black,*/
-                  /*0   -2px 0 black,*/
-                  /*2px  1px 0 black,*/
-                 /*-2px  1px 0 black,*/
-                  /*1px  2px 0 black,*/
-                  /*1px -2px 0 black,*/
-                  /*2px -1px 0 black,*/
-                 /*-2px -1px 0 black,*/
-                 /*-1px  2px 0 black,*/
-                 /*-1px -2px 0 black;*/
-    /*}*/
+
 ul.navbar, ul.footer{
     position:absolute;left:0;right:0;
     width:auto;
@@ -199,29 +184,6 @@ ul.navbar > li, ul.footer > li{
     content: "\e118";
     }
 a.button{
-/*    color:white;
-    background:#333;
-    width:1.5em;
-    margin-left:3px;
-    height:1.5em;
-    display:inline-block;
-    vertical-align:middle;
-    line-height:1.5em;
-    text-align:center;
-    border-radius:0.25em;
-    border:1px solid gray;
-    box-shadow: 1px  1px 0 black,
-                 -1px -1px 0 black,
-                  1px -1px 0 black,
-                 -1px  1px 0 black;
-    text-shadow: 1px  1px 0 black,
-                 -1px -1px 0 black,
-                  1px -1px 0 black,
-                 -1px  1px 0 black,
-                  1px  0   0 black,
-                 -1px  0   0 black,
-                  0   -1px 0 black,
-                  0    1px 0 black;*/
     }
 a.button:hover{
 /*    color:white;

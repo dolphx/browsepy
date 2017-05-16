@@ -21,6 +21,7 @@
         <p>The Global Assessment Report on Disaster Risk Reduction (GAR) is a biennial global assessment of disaster risk reduction and comprehensive review and analysis of the natural hazards that are affecting humanity. For more information about the document and the process, please see the <a href="https://www.unisdr.org/we/inform/gar" target="_blank">UNISDR GAR pages</a>.</p>
         <p>The assessment relies on a vast dataset produced by a large number of collaborating institutions. This dataset can now be accessed online through an experimental service offered by the <a href="http://www.mnm-team.org/" target="_blank">MNM-Team</a>. The service has been launched to gauge interest, gather feedback and to estimate resourced needed in sustainable operations. In case you encounter any issues or have any questions about the service, please contact <a href="mailto:info@envcomp.eu" target="_blank">info@envcomp.eu</a>!</p>
     </div>
+<a href="javaScript:popupTerms();">Terms and Conditions</a>
 <h3> <b>Navigation:</b>
     {% for parent in file.ancestors[::-1] %}
         <a href="{{ url_for('browse', path=parent.urlpath) }}">{{ parent.name }}</a>
@@ -31,6 +32,10 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="navigation"> <b>Description:</b>
+{{ file.description if file.description else "" }}
+</div>
 
 {% if file.can_upload %}
     <form class="upload" method="post" action="{{ url_for('upload', path=file.urlpath) }}" enctype="multipart/form-data">
@@ -48,8 +53,10 @@
         <table class="browser table">
             <thead>
             <tr>
-                <th colspan="3">Name</th>
+                <th colspan="2">Name</th>
+		<th>Download</th>
                 <th>Description</th>
+		<th>Edit</th>
                 <th>Mimetype</th>
                 <th>Modified</th>
                 <th>Size</th>
@@ -70,9 +77,13 @@
                             <a href="{{ url_for('remove', path=f.urlpath) }}" class="remove button"></a>
                         {% endif %}
                         {% if f.can_download %}
-                            <a href="{{ url_for('download_directory' if f.is_directory else 'download_file', path=f.urlpath) }}" class="download button"></a>
+			  <div align="center">
+                            <a title='{{ "Download directory as tar-archive" if f.is_directory else "Download file" }}'
+			       href="{{ url_for('download_directory' if f.is_directory else 'download_file', path=f.urlpath) }}" 
+			       class="download button">
+			    </a>
+		          </div>
                         {% endif %}
-                        <a href="javaScript:editMetadata('{{ f.urlpath }}', '{{ f.description if f.description else "" }}');" class="edit button"></a>
                         {% for endpoint, widget in f.actions %}
                             {% if widget.place == 'button' %}
                                 <a href="{{ url_for(endpoint, path=f.urlpath) }}"
@@ -81,7 +92,13 @@
                             {% endif %}
                         {% endfor %}
                     </td>
-                    <td>{{ f.description if f.description else "" }}</td>
+                    <td>{{ f.description if f.description else "" }}
+		    </td>
+                    <td>
+			<div align="center">
+				<a title="Click to edit metadata" href="javaScript:editMetadata('{{ f.urlpath }}', '{{ f.description if f.description else "" }}');" class="edit button"></a>
+			</div>
+		    </td>
                     <td>{{ f.type }}</td>
                     <td>{{ f.modified }}</td>
                     <td>{{ f.size }}</td>
