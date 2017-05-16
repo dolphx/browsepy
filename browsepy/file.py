@@ -182,12 +182,12 @@ class File(object):
         db.session.commit()
         return meta
 
-    @property
+    @cached_property
     def size(self):
         try:
             meta = Metadata.query.filter_by(path=self.path).one()
             if meta.size and meta.size_date:
-                if datetime.datetime.now() < meta.size_date + datetime.timedelta(days=1):
+                if datetime.datetime.now() < meta.size_date + datetime.timedelta(days=21):
                     return self.print_size(meta.size)
                 else:
                     meta = self.update_db_size(meta)
@@ -219,7 +219,7 @@ class File(object):
     def type(self):
         return self.mimetype.split(";", 1)[0]
 
-    @property
+    @cached_property
     def description(self):
         try:
             return Metadata.query.filter_by(path=self.path).one().desc
@@ -235,7 +235,8 @@ class File(object):
         return "default"
 
     def listdir(self):
-        ignored=[]
+	app = current_app
+        ignored=app.config['directory_ignore']
 
         path_joiner = functools.partial(os.path.join, self.path)
         content = [
@@ -268,14 +269,14 @@ class TarFileStream(object):
 
     def __init__(self, path, buffsize=10240):
         self.path = path
-        self.name = os.path.basename(path) + ".tgz"
+        self.name = os.path.basename(path) + ".tar"
 
         self._finished = 0
         self._want = 0
         self._data = bytes()
         self._add = self.event_class()
         self._result = self.event_class()
-        self._tarfile = self.tarfile_class(fileobj=self, mode="w|gz", bufsize=buffsize)  # stream write
+        self._tarfile = self.tarfile_class(fileobj=self, mode="w|", bufsize=buffsize)  # stream write
         self._th = self.thread_class(target=self.fill)
         self._th.start()
 
@@ -332,7 +333,7 @@ class OutsideRemovableBase(Exception):
 
 binary_units = ("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
 standard_units = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-def fmt_size(size, binary=True):
+def fmt_size(size, binary=False):
     '''
     Get size and unit.
 
