@@ -4,8 +4,8 @@
 .coverage
 env/*
 *.pyc
-/metadata.db
-/migrations/
+metadata.db
+migrations/
 .idea/
 __pycache__/
 browsepy/__pycache__/
