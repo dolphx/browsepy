@@ -134,7 +134,7 @@ def download_file(path):
         pass
     return NotFound()
 
-@app.route("/download/directory/<path:path>.tgz")
+@app.route("/download/directory/<path:path>.tar")
 def download_directory(path):
     try:
         directory = File.from_urlpath(path)
