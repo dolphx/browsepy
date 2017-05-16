@@ -235,9 +235,11 @@ class File(object):
         return "default"
 
     def listdir(self):
-	app = current_app
-        ignored=app.config['directory_ignore']
-
+        app = current_app
+        try:
+            ignored=app.config['directory_ignore']
+        except KeyError:
+            ignored = None
         path_joiner = functools.partial(os.path.join, self.path)
         content = [
             self.__class__(path=path_joiner(path), app=self.app)
@@ -245,7 +247,8 @@ class File(object):
             ]
 
         filtered_content = content
-        filtered_content = [c for c in content if c.name not in ignored]
+        if ignored:
+            filtered_content = [c for c in content if c.name not in ignored]
         filtered_content.sort(key=lambda f: (f.is_directory, f.name.lower()))
         return filtered_content
 
