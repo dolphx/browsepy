@@ -77,7 +77,6 @@ def browse(path):
     try:
         directory = File.from_urlpath(path)
         if directory.is_directory:
-            files = directory.listdir()
             return stream_template("browse.html", file=directory)
     except OutsideDirectoryBase:
         pass
