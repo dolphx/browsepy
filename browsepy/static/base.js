@@ -52,11 +52,11 @@ function popupTerms()
     bootbox.confirm(terms, function(result){
         if(result)
         {
-            createCookie("termsandconditions", "accepted", 365);
+            createCookie("termsandconditions", "accepted", 21);
         }
         else
         {
             popupTerms();
         }
-    });
+    }).off("shown.bs.modal");
 }
