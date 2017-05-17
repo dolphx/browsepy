@@ -5,25 +5,25 @@
     <title>{% block title %}{{ config.get("title", "BrowsePy") }}{% endblock %}</title>
     {% block style %}
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='base.css') }}"/>
+    	<link href="{{ url_for('.static', filename='css/bootstrap.css') }}" rel="stylesheet" media="screen">
+    	<link href="{{ url_for('.static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     {% endblock %}
 
-    <link href="{{ url_for('.static', filename='css/bootstrap.css') }}" rel="stylesheet" media="screen">
-    <link href="{{ url_for('.static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-    <script src="//code.jquery.com/jquery-latest.js"></script>
-    <script src="{{ url_for('.static', filename='js/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('.static', filename='js/bootbox.min.js') }} "></script>
+    {% block scripts %}
+    	<script src="//code.jquery.com/jquery-latest.js"></script>
+    	<script src="{{ url_for('.static', filename='js/bootstrap.min.js') }}"></script>
+    	<script src="{{ url_for('.static', filename='js/bootbox.min.js') }} "></script>
+        <script src="{{ url_for('static', filename='terms.js') }}"></script>
+        <script src="{{ url_for('static', filename='base.js') }}"></script>
+    {% endblock %}
 </head>
 
 <body>
 	<div class="banner">
 		<a href="http://www.preventionweb.net/english/hyogo/gar/2015/en/home/index.html"><img src="{{ url_for('.static', filename='BannerRiskAtlas.png') }}" /></a>
-        	<a href="http://www.mnm-team.org/"><img src="{{ url_for('.static', filename='mnmLogoNeu_caption.png') }}" height="100" class="innermnm" /></a>
-	<div>
+        	<a class="innermnm" href="http://www.mnm-team.org/"><img src="{{ url_for('.static', filename='mnmLogoNeu_caption.png') }}" height="90px"/></a></div>
+	</div>
 
-    {% block scripts %}
-        <script src="{{ url_for('static', filename='terms.js') }}"></script>
-        <script src="{{ url_for('static', filename='base.js') }}"></script>
-    {% endblock %}
     {% block header %}
     {% endblock %}
     {% block content %}

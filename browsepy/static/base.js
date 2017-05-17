@@ -20,9 +20,9 @@
     }
 }());
 
-if ( !  readCookie("termsandconditions")) {
-    popupTerms();
-}
+#if ( !  readCookie("termsandconditions")) {
+#    popupTerms();
+#}
 function createCookie(name,value,days) {
     if (days) {
         var date = new Date();
@@ -49,14 +49,19 @@ function eraseCookie(name) {
 }
 function popupTerms()
 {
-    bootbox.confirm(terms, function(result){
-        if(result)
-        {
-            createCookie("termsandconditions", "accepted", 21);
-        }
-        else
-        {
-            popupTerms();
-        }
-    }).off("shown.bs.modal");
+    bootbox.confirm({
+		message: terms,
+		closeButton: false,
+		callback:  function(result){
+        		if(result)
+        		{
+            			createCookie("termsandconditions", "accepted", 21);
+        		}
+        		else
+        		{
+            			popupTerms();
+        		}
+		}
+		
+   }).off("shown.bs.modal");
 }
