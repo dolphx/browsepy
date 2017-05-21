@@ -42,8 +42,15 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 
 # To avoid circular imports of db, include everything that imports db here!
-from .file import File, OutsideRemovableBase, OutsideDirectoryBase, secure_filename, fs_encoding
 from .models import Metadata
+
+meta  = Metadata.query.all()
+allMetadata = {}
+print 'Creating Metadata dictionary'
+for m in meta:
+    allMetadata.update({m.path:m})
+
+from .file import File, OutsideRemovableBase, OutsideDirectoryBase, secure_filename, fs_encoding
 
 if "BROWSEPY_SETTINGS" in os.environ:
     app.config.from_envvar("BROWSEPY_SETTINGS")
@@ -77,7 +84,8 @@ def browse(path):
     try:
         directory = File.from_urlpath(path)
         if directory.is_directory:
-            return stream_template("browse.html", file=directory)
+            return stream_template("browse.html", file=directory, 
+                                   files=directory.listdir())
     except OutsideDirectoryBase:
         pass
     return NotFound()

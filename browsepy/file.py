@@ -21,7 +21,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from .compat import PY_LEGACY, range
 from .models import Metadata
 
-from . import db
+from . import db, allMetadata
 
 undescore_replace = '%s:underscore' % __name__
 codecs.register_error(undescore_replace,
@@ -32,7 +32,6 @@ codecs.register_error(undescore_replace,
 if not PY_LEGACY:
     unicode = str
 
-
 class File(object):
     re_charset = re.compile('; charset=(?P<charset>[^;]+)')
     parent_class = None # none means current class
@@ -40,6 +39,7 @@ class File(object):
     def __init__(self, path=None, app=None):
         self.path = path
         self.app = current_app if app is None else app
+        self.meta = allMetadata[self.path]
 
     def remove(self):
         if not self.can_remove:
@@ -184,28 +184,18 @@ class File(object):
 
     @cached_property
     def size(self):
-        try:
-            meta = Metadata.query.filter_by(path=self.path).one()
-            if meta.size and meta.size_date:
-                if datetime.datetime.now() < meta.size_date + datetime.timedelta(days=21):
-                    return self.print_size(meta.size)
-                else:
-                    meta = self.update_db_size(meta)
-                    return self.print_size(meta.size)
+        if self.meta.size and self.meta.size_date:
+            if datetime.datetime.now() < self.meta.size_date + datetime.timedelta(days=21):
+                return self.print_size(self.meta.size)
             else:
-                meta = self.update_db_size(meta)
-                return self.print_size(meta.size)
+                self.meta = self.update_db_size(meta)
+                return self.print_size(self.meta.size)
+        else:
+            self.meta = self.update_db_size(self.meta)
+            return self.print_size(self.meta.size)
 
-        except SQLAlchemyError:  # add new file description"
-            meta = Metadata()
-            meta.path = self.path
-            meta.size = self.get_rawsize()
-            meta.size_date = datetime.datetime.now()
 
-            db.session.add(meta)
-            db.session.commit()
-
-            return self.print_size(meta.size)
+        return self.print_size(self.meta.size)
 
     @property
     def urlpath(self):
@@ -221,8 +211,9 @@ class File(object):
 
     @cached_property
     def description(self):
+	return ""
         try:
-            return Metadata.query.filter_by(path=self.path).one().desc
+            return self.meta.desc
         except:
             return None
 

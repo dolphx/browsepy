@@ -20,9 +20,9 @@
     }
 }());
 
-#if ( !  readCookie("termsandconditions")) {
-#    popupTerms();
-#}
+if ( !  readCookie("termsandconditions")) {
+    popupTerms();
+}
 function createCookie(name,value,days) {
     if (days) {
         var date = new Date();
