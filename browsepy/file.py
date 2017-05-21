@@ -97,8 +97,10 @@ class File(object):
     def actions(self):
         return self.plugin_manager.get_actions(self)
 
-    @cached_property
+    @property
     def can_download(self):
+	if self.meta.size > self.app.config["MAX_DIR_DL_SIZE"]:
+            return False;
         return self.app.config['directory_downloadable'] or not self.is_directory
 
     @cached_property
@@ -211,7 +213,6 @@ class File(object):
 
     @cached_property
     def description(self):
-	return ""
         try:
             return self.meta.desc
         except:
