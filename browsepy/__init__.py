@@ -100,36 +100,36 @@ def open_file(path):
         pass
     return NotFound()
 
-@app.route("/edit/<path:path>", methods=("GET", "POST"))
-def edit_metadata(path):
-    try:
-        file = File.from_urlpath(path)
-
-        if request.method == "POST":
-            description = request.json['description']
-            try:  # update file description"
-                meta = Metadata.query.filter_by(path=file.path).one()
-                meta.desc = description
-                meta.path = file.path
-                db.session.commit()
-
-            except SQLAlchemyError:  # add new file description"
-                meta = Metadata()
-                meta.desc = description
-                meta.path = file.path
-                db.session.add(meta)
-                db.session.commit()
-
-            parent = file.parent
-            if parent is None:
-                # base is not removable
-                return NotFound()
-
-            return redirect(url_for(".browse", path=parent.urlpath))
-
-    except OutsideDirectoryBase:
-        pass
-    return NotFound()
+#@app.route("/edit/<path:path>", methods=("GET", "POST"))
+#def edit_metadata(path):
+#    try:
+#        file = File.from_urlpath(path)
+#
+#        if request.method == "POST":
+#            description = request.json['description']
+#            try:  # update file description"
+#                meta = Metadata.query.filter_by(path=file.path).one()
+#                meta.desc = description
+#                meta.path = file.path
+#                db.session.commit()
+#
+#            except SQLAlchemyError:  # add new file description"
+#                meta = Metadata()
+#                meta.desc = description
+#                meta.path = file.path
+#                db.session.add(meta)
+#                db.session.commit()
+#
+#            parent = file.parent
+#            if parent is None:
+#                # base is not removable
+#                return NotFound()
+#
+#            return redirect(url_for(".browse", path=parent.urlpath))
+#
+#    except OutsideDirectoryBase:
+#        pass
+#    return NotFound()
 
 @app.route("/download/file/<path:path>")
 def download_file(path):

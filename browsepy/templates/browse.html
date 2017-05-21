@@ -56,7 +56,7 @@
                     <th colspan="2">Name</th>
                     <th>Download</th>
                     <th>Description</th>
-                    <th>Edit</th>
+                    <!--<th>Edit</th>-->
                     <th>Mimetype</th>
                     <th>Modified</th>
                     <th>Size</th>
@@ -94,11 +94,11 @@
                         </td>
                         <td>{{ f.description if f.description else "" }}
                         </td>
-                        <td>
+                        <!--<td>
                             <div align="center">
                                 <a title="Click to edit metadata" href="javaScript:editMetadata('{{ f.urlpath }}', '{{ f.description if f.description else "" }}');" class="edit button"></a>
                             </div>
-                        </td>
+                        </td>-->
                         <td>{{ f.type }}</td>
                         <td>{{ f.modified }}</td>
                         <td>{{ f.size }}</td>
