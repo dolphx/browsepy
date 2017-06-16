@@ -99,7 +99,7 @@ class File(object):
 
     @property
     def can_download(self):
-	if self.meta.size > self.app.config["MAX_DIR_DL_SIZE"]:
+	if self.meta.size > self.app.config["MAX_DIR_DL_SIZE"] and self.is_directory:
             return False;
         return self.app.config['directory_downloadable'] or not self.is_directory
 
@@ -186,15 +186,15 @@ class File(object):
 
     @cached_property
     def size(self):
-        if self.meta.size and self.meta.size_date:
-            if datetime.datetime.now() < self.meta.size_date + datetime.timedelta(days=21):
-                return self.print_size(self.meta.size)
-            else:
-                self.meta = self.update_db_size(meta)
-                return self.print_size(self.meta.size)
-        else:
-            self.meta = self.update_db_size(self.meta)
-            return self.print_size(self.meta.size)
+        #if self.meta.size and self.meta.size_date:
+        #    if datetime.datetime.now() < self.meta.size_date + datetime.timedelta(days=21):
+        #        return self.print_size(self.meta.size)
+        #    else:
+        #        self.meta = self.update_db_size(meta)
+        #        return self.print_size(self.meta.size)
+        #else:
+        #    self.meta = self.update_db_size(self.meta)
+        #    return self.print_size(self.meta.size)
 
 
         return self.print_size(self.meta.size)
